@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shortify — Scalable URL Shortener</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==============================================
+       HEADER / NAVBAR
+       ============================================== -->
+  <header class="navbar" id="top">
+    <div class="container navbar-content">
+      <div class="brand">
+        <a href="#top" class="brand-link">
+          <div class="logo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Shortify</span>
+            <span class="brand-subtitle">Scalable URL Shortener</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Desktop & Mobile Navigation Links -->
+      <nav class="nav-menu" id="navMenu">
+        <ul class="nav-links">
+          <li><a href="#shorten" class="nav-link" id="navShorten">Shorten</a></li>
+          <li><a href="#analytics" class="nav-link" id="navAnalytics">Analytics</a></li>
+          <li><a href="#how-it-works" class="nav-link" id="navHowItWorks">How It Works</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="#shorten" class="btn btn-sm btn-primary">Create Short Link</a>
+        </div>
+      </nav>
+
+      <!-- Mobile Hamburger Toggle -->
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==============================================
+       HERO / URL SHORTENER SECTION
+       ============================================== -->
+  <main>
+    <section class="hero-section" id="shorten">
+      <div class="container">
+        <div class="hero-header text-center">
+          <div class="badge-pill">
+            <span class="pulse-dot"></span> High Performance &amp; Scalable Links
+          </div>
+          <h1 class="hero-title">Shorten Your URL</h1>
+          <p class="hero-subtitle">Create short, shareable links in seconds.</p>
+        </div>
+
+        <!-- URL Shortener Card & Form -->
+        <div class="shortener-card card">
+          <form id="shortenerForm" novalidate>
+            <!-- 1. Long URL Input -->
+            <div class="form-group">
+              <label for="longUrlInput" class="form-label">
+                Destination URL <span class="required-star">*</span>
+              </label>
+              <div class="input-with-icon">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  </svg>
+                </span>
+                <input 
+                  type="url" 
+                  id="longUrlInput" 
+                  class="form-control" 
+                  placeholder="https://example.com/your-long-url" 
+                  autocomplete="off"
+                  required
+                >
+              </div>
+              <small class="form-help">Must start with http:// or https://</small>
+            </div>
+
+            <!-- Form Row: Custom Alias & Expiration Date -->
+            <div class="form-row">
+              <!-- 2. Custom Alias Input (Optional) -->
+              <div class="form-group col-half">
+                <label for="customAliasInput" class="form-label">
+                  Custom Alias <span class="optional-tag">(Optional)</span>
+                </label>
+                <div class="input-with-prefix">
+                  <span class="input-prefix">shortify.demo/</span>
+                  <input 
+                    type="text" 
+                    id="customAliasInput" 
+                    class="form-control" 
+                    placeholder="my-portfolio"
+                    maxlength="30"
+                    autocomplete="off"
+                  >
+                </div>
+                <small class="form-help">Letters, numbers, and hyphens only</small>
+              </div>
+
+              <!-- 3. Expiration Date Input (Optional) -->
+              <div class="form-group col-half">
+                <label for="expirationInput" class="form-label">
+                  Link Expiration <span class="optional-tag">(Optional)</span>
+                </label>
+                <div class="input-with-icon">
+                  <span class="input-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                  </span>
+                  <input 
+                    type="datetime-local" 
+                    id="expirationInput" 
+                    class="form-control"
+                  >
+                </div>
+                <small class="form-help">Leave blank for permanent link</small>
+              </div>
+            </div>
+
+            <!-- Validation Error Alert Container -->
+            <div id="formAlert" class="alert alert-error hidden" role="alert">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span id="formAlertMessage"></span>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <!-- 4. Shorten URL button -->
+              <button type="submit" id="shortenBtn" class="btn btn-primary btn-lg">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                Shorten URL
+              </button>
+
+              <button type="button" id="clearBtn" class="btn btn-secondary btn-lg">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Clear
+              </button>
+            </div>
+          </form>
+
+          <!-- Result Card (Initially Hidden) -->
+          <div id="resultCard" class="result-card hidden">
+            <div class="result-header">
+              <div class="result-title-wrap">
+                <div class="badge-success">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Success
+                </div>
+                <h3 class="result-title">Your Short URL</h3>
+              </div>
+              <span class="status-indicator active">
+                <span class="dot"></span> Ready to share
+              </span>
+            </div>
+
+            <!-- Short URL Box with Copy Button -->
+            <div class="short-url-box">
+              <div class="url-display">
+                <svg class="link-symbol" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <a href="#" id="shortUrlLink" class="short-url-text" target="_blank" rel="noopener noreferrer">
+                  https://shortify.demo/aB72xK
+                </a>
+              </div>
+              <button type="button" id="copyBtn" class="btn btn-copy" title="Copy to clipboard">
+                <svg id="copyIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span id="copyBtnText">Copy</span>
+              </button>
+            </div>
+
+            <!-- Metadata Details Grid -->
+            <div class="result-meta-grid">
+              <div class="meta-item">
+                <span class="meta-label">Original URL</span>
+                <span id="resOriginalUrl" class="meta-value text-truncate" title="">https://example.com/your-long-url</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Short Code</span>
+                <span id="resShortCode" class="meta-badge">aB72xK</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Expiration Status</span>
+                <span id="resExpiration" class="meta-badge meta-badge-gray">No expiration (Permanent)</span>
+              </div>
+            </div>
+
+            <!-- Quick Action: Track in Analytics -->
+            <div class="result-footer">
+              <button type="button" id="trackInAnalyticsBtn" class="btn btn-outline-sm">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                View Analytics for this Link
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================
+         ANALYTICS SECTION
+         ============================================== -->
+    <section class="analytics-section" id="analytics">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="badge-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+            Real-time Insights
+          </div>
+          <h2 class="section-title">Link Analytics</h2>
+          <p class="section-subtitle">Track engagement, click trends, and link status instantly.</p>
+        </div>
+
+        <div class="analytics-wrapper card">
+          <!-- Short-code Search Form -->
+          <form id="analyticsSearchForm" class="analytics-search-box" novalidate>
+            <div class="search-input-group">
+              <span class="search-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </span>
+              <input 
+                type="text" 
+                id="analyticsCodeInput" 
+                class="form-control" 
+                placeholder="Enter short code (e.g. aB72xK or my-portfolio)"
+                autocomplete="off"
+              >
+              <button type="submit" id="viewAnalyticsBtn" class="btn btn-primary">
+                View Analytics
+              </button>
+            </div>
+          </form>
+
+          <!-- Analytics Alert Message -->
+          <div id="analyticsAlert" class="alert alert-error hidden" role="alert">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span id="analyticsAlertMessage">Please enter a short code to view analytics.</span>
+          </div>
+
+          <!-- Analytics Content Display -->
+          <div id="analyticsContent" class="analytics-content">
+            <!-- 4 Metric Cards -->
+            <div class="metrics-grid">
+              <!-- Metric 1: Total Clicks -->
+              <div class="metric-card">
+                <div class="metric-header">
+                  <span class="metric-label">Total Clicks</span>
+                  <div class="metric-icon icon-blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M15 3h6v6"></path>
+                      <path d="M10 14L21 3"></path>
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    </svg>
+                  </div>
+                </div>
+                <div class="metric-value-wrap">
+                  <span class="metric-number" id="metricClicks">24</span>
+                  <span class="metric-trend trend-up">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                    +18% this week
+                  </span>
+                </div>
+                <span class="metric-subtext">Aggregated redirect hits</span>
+              </div>
+
+              <!-- Metric 2: Last Accessed -->
+              <div class="metric-card">
+                <div class="metric-header">
+                  <span class="metric-label">Last Accessed</span>
+                  <div class="metric-icon icon-purple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                  </div>
+                </div>
+                <div class="metric-value-wrap">
+                  <span class="metric-value-highlight" id="metricLastAccessed">Today, 09:15 AM</span>
+                </div>
+                <span class="metric-subtext">Most recent redirect activity</span>
+              </div>
+
+              <!-- Metric 3: Link Status -->
+              <div class="metric-card">
+                <div class="metric-header">
+                  <span class="metric-label">Link Status</span>
+                  <div class="metric-icon icon-green">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                  </div>
+                </div>
+                <div class="metric-value-wrap">
+                  <span class="metric-status-badge status-active" id="metricStatus">
+                    <span class="pulse-dot"></span> Active
+                  </span>
+                </div>
+                <span class="metric-subtext">Available for worldwide routing</span>
+              </div>
+
+              <!-- Metric 4: Short Code -->
+              <div class="metric-card">
+                <div class="metric-header">
+                  <span class="metric-label">Short Code</span>
+                  <div class="metric-icon icon-amber">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="14" width="7" height="7"></rect>
+                      <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                  </div>
+                </div>
+                <div class="metric-value-wrap">
+                  <span class="metric-code" id="metricShortCode">aB72xK</span>
+                </div>
+                <span class="metric-subtext">Unique database identifier</span>
+              </div>
+            </div>
+
+            <!-- Click Statistics (Pure CSS Chart - No External Libraries) -->
+            <div class="chart-container">
+              <div class="chart-header">
+                <div>
+                  <h4 class="chart-title">Weekly Click Statistics</h4>
+                  <p class="chart-subtitle">Demonstration distribution across past 7 days</p>
+                </div>
+                <div class="chart-legend">
+                  <span class="legend-dot"></span> Daily Visits
+                </div>
+              </div>
+
+              <!-- CSS Bars Graph -->
+              <div class="css-chart-wrapper">
+                <div class="css-chart">
+                  <!-- Day 1: Mon -->
+                  <div class="chart-col">
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-height: 35%;" data-clicks="3 clicks">
+                        <span class="bar-tooltip">3</span>
+                      </div>
+                    </div>
+                    <span class="bar-label">Mon</span>
+                  </div>
+
+                  <!-- Day 2: Tue -->
+                  <div class="chart-col">
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-height: 50%;" data-clicks="5 clicks">
+                        <span class="bar-tooltip">5</span>
+                      </div>
+                    </div>
+                    <span class="bar-label">Tue</span>
+                  </div>
+
+                  <!-- Day 3: Wed -->
+                  <div class="chart-col">
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-height: 25%;" data-clicks="2 clicks">
+                        <span class="bar-tooltip">2</span>
+                      </div>
+                    </div>
+                    <span class="bar-label">Wed</span>
+                  </div>
+
+                  <!-- Day 4: Thu -->
+                  <div class="chart-col">
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-height: 40%;" data-clicks="4 clicks">
+                        <span class="bar-tooltip">4</span>
+                      </div>
+                    </div>
+                    <span class="bar-label">Thu</span>
+                  </div>
+
+                  <!-- Day 5: Fri -->
+                  <div class="chart-col">
+                    <div class="bar-track">
+                      <div class="bar-fill active" style="--bar-height: 80%;" data-clicks="8 clicks">
+                        <span class="bar-tooltip">8</span>
+                      </div>
+                    </div>
+                    <span class="bar-label">Fri</span>
+                  </div>
+
+                  <!-- Day 6: Sat -->
+                  <div class="chart-col">
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-height: 15%;" data-clicks="1 click">
+                        <span class="bar-tooltip">1</span>
+                      </div>
+                    </div>
+                    <span class="bar-label">Sat</span>
+                  </div>
+
+                  <!-- Day 7: Sun -->
+                  <div class="chart-col">
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-height: 10%;" data-clicks="1 click">
+                        <span class="bar-tooltip">1</span>
+                      </div>
+                    </div>
+                    <span class="bar-label">Sun</span>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-footer">
+                <span>Peak activity observed on <strong>Friday</strong> (8 clicks)</span>
+                <span class="chart-note">Values are static frontend demonstration mockups</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================
+         HOW IT WORKS SECTION
+         ============================================== -->
+    <section class="how-it-works-section" id="how-it-works">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="badge-pill">Simple Workflow</div>
+          <h2 class="section-title">How It Works</h2>
+          <p class="section-subtitle">Transform lengthy, complex links into clean short codes in four easy steps.</p>
+        </div>
+
+        <div class="steps-grid">
+          <!-- Step 1 -->
+          <div class="step-card card">
+            <div class="step-header">
+              <span class="step-badge">01</span>
+              <div class="step-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+              </div>
+            </div>
+            <h3 class="step-title">Enter URL</h3>
+            <p class="step-desc">
+              Paste your long destination address. Add an optional custom alias or expiration timestamp.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-card card">
+            <div class="step-header">
+              <span class="step-badge">02</span>
+              <div class="step-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+            </div>
+            <h3 class="step-title">Create Short Link</h3>
+            <p class="step-desc">
+              Our service maps your long URL to a compact, collision-free short identifier with sub-millisecond response.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-card card">
+            <div class="step-header">
+              <span class="step-badge">03</span>
+              <div class="step-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+              </div>
+            </div>
+            <h3 class="step-title">Share Link</h3>
+            <p class="step-desc">
+              Copy your branded short URL with one click and distribute it across social media, messages, or emails.
+            </p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="step-card card">
+            <div class="step-header">
+              <span class="step-badge">04</span>
+              <div class="step-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </div>
+            </div>
+            <h3 class="step-title">Track Clicks</h3>
+            <p class="step-desc">
+              Inspect total redirect counts, recent access timestamps, and weekly engagement trends right from your dashboard.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==============================================
+       FOOTER
+       ============================================== -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="brand">
+          <div class="logo-icon logo-icon-sm">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </div>
+          <span class="brand-name">Shortify</span>
+        </div>
+        <p class="footer-tagline">Shortify — URL Shortener Dashboard</p>
+      </div>
+
+      <div class="footer-badge-wrap">
+        <span class="demo-pill">Frontend demonstration only</span>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Shortify. Designed for high scalability and modern developer workflows.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vanilla JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
