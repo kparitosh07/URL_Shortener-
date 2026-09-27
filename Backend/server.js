@@ -3,16 +3,33 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import urlRoutes from "./routes/urlRoutes.js";
+import {redirectUrl} from "./controllers/urlController.js";
+
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 connectDB();
 
-app.use(cors());
+app.use(
+    cors({
+        origin: "http://localhost:5500"
+    })
+);
+
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "../frontend")));
+
 app.use("/api", urlRoutes);
+
+app.get("/:shortCode", redirectUrl);
 
 app.get("/", (req, res) => {
   res.json({

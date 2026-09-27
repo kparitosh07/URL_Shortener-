@@ -81,3 +81,76 @@ export const createShortUrl = async (req, res) => {
         });
     }
 };
+
+export const redirectUrl = async (req,res) => {
+    try {
+        const { shortCode } = req.params;
+
+        const url = await Url.findOne({ shortCode });
+
+        if(!url){
+            return res.status(404).json({
+                success: false,
+                message: "Short URL not found"
+            });
+        }
+
+        if(url.expiresAt && new Date() > url.expiresAt){
+            return res.status(404).json({
+                success: false,
+                message: "Short Url has expired"
+            });
+        }
+
+        url.clicks += 1;
+        url.lastAccessed = new Date();
+
+        await url.save();
+        return res.redirect(302 , url.originalUrl);
+    } catch (error) {
+        console.error("Redirect url error", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+}
+
+export const getAnalytics = async (req, res) => {
+    try {
+        const { shortCode } = req.params;
+
+        const url = await Url.findOne({ shortCode });
+
+        if (!url) {
+            return res.status(404).json({
+                success: false,
+                message: "Short URL not found"
+            });
+        }
+
+        const isExpired =
+            url.expiresAt && new Date() > url.expiresAt;
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                shortCode: url.shortCode,
+                originalUrl: url.originalUrl,
+                clicks: url.clicks,
+                lastAccessed: url.lastAccessed,
+                expiresAt: url.expiresAt,
+                status: isExpired ? "Expired" : "Active"
+            }
+        });
+
+    } catch (error) {
+        console.error("Analytics error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};

@@ -1,22 +1,8 @@
-/**
- * ============================================================================
- * Shortify — Vanilla JavaScript Frontend Interactions
- * ============================================================================
- * IMPORTANT:
- * - This script contains ONLY frontend UI manipulation and event handling.
- * - NO backend, NO fetch/Axios, NO API endpoints, NO database calls.
- * - Works completely standalone in the browser by opening index.html.
- * ============================================================================
- */
-
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
+  const API_URL = 'http://localhost:5000';
 
-  // --------------------------------------------------------------------------
-  // 1. DOM ELEMENT REFERENCES
-  // --------------------------------------------------------------------------
-  
   // URL Shortener Form Elements
   const shortenerForm = document.getElementById('shortenerForm');
   const longUrlInput = document.getElementById('longUrlInput');
@@ -117,91 +103,110 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. SHORTEN URL FORM SUBMISSION
   // --------------------------------------------------------------------------
 
-  shortenerForm.addEventListener('submit', (e) => {
-    // Prevent default form submission / page reload
+  shortenerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Reset previous errors
     clearFormError();
 
     const rawUrl = longUrlInput.value.trim();
     const rawAlias = customAliasInput.value.trim();
     const rawExpiration = expirationInput.value;
 
-    // Requirement 1: Check whether the URL input is empty
+    // Validate URL
     if (!rawUrl) {
       showFormError('Please enter a destination URL to shorten.');
       longUrlInput.focus();
       return;
     }
 
-    // Requirement 2: Check that the URL starts with http:// or https://
-    const startsWithHttp = rawUrl.startsWith('http://') || rawUrl.startsWith('https://');
-    if (!startsWithHttp) {
-      showFormError('URL must begin with http:// or https:// (e.g. https://example.com)');
+    if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+      showFormError(
+        'URL must begin with http:// or https://'
+      );
       longUrlInput.focus();
       return;
     }
 
-    // Requirement 3: Validate custom alias if provided
-    let finalCode = DEFAULT_DEMO_CODE;
+    // Validate custom alias on frontend
+    if (rawAlias !== '' && !isValidAlias(rawAlias)) {
+      customAliasInput.classList.add('input-error');
 
-    if (rawAlias !== '') {
-      // Check for allowed characters: letters, numbers, and hyphens only
-      if (!isValidAlias(rawAlias)) {
-        customAliasInput.classList.add('input-error');
-        showFormError('Custom alias can only contain letters, numbers, and hyphens.');
-        customAliasInput.focus();
-        return;
-      }
+      showFormError(
+        'Custom alias can only contain letters, numbers, and hyphens.'
+      );
 
-      // Check demonstration conflict rule: "portfolio" alias demo conflict
-      if (rawAlias.toLowerCase() === 'portfolio') {
-        customAliasInput.classList.add('input-error');
-        showFormError('Demo: This alias is already in use. Please try another custom alias.');
-        customAliasInput.focus();
-        return;
-      }
-
-      // Use user's custom alias as short code
-      finalCode = rawAlias;
+      customAliasInput.focus();
+      return;
     }
 
-    // Construct demo short URL
-    const demoShortUrl = `https://shortify.demo/${finalCode}`;
+    try {
+      const requestData = {
+        originalUrl: rawUrl,
+        customAlias: rawAlias || null,
+        expiresAt: rawExpiration || null
+      };
 
-    // Update Result Card contents
-    shortUrlLink.textContent = demoShortUrl;
-    shortUrlLink.href = rawUrl; // Opens destination URL in new tab for demo preview
-    resOriginalUrl.textContent = rawUrl;
-    resOriginalUrl.title = rawUrl;
-    resShortCode.textContent = finalCode;
 
-    // Format Expiration Date (if provided)
-    if (rawExpiration) {
-      const expDate = new Date(rawExpiration);
-      const formattedDate = expDate.toLocaleString([], {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+      const response = await fetch(`${API_URL}/api/shorten`, {
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify(requestData)
       });
-      resExpiration.textContent = `Expires: ${formattedDate}`;
-      resExpiration.classList.remove('meta-badge-gray');
-    } else {
-      resExpiration.textContent = 'No expiration (Permanent)';
-      resExpiration.classList.add('meta-badge-gray');
+
+      const result = await response.json();
+
+      // Backend returned an error
+      if (!response.ok) {
+        showFormError(result.message || 'Unable to shorten URL.');
+        return;
+      }
+
+      // Display REAL backend response
+      const data = result.data;
+
+      shortUrlLink.textContent = data.shortUrl;
+      shortUrlLink.href = data.shortUrl;
+
+      resOriginalUrl.textContent = data.originalUrl;
+      resOriginalUrl.title = data.originalUrl;
+
+      resShortCode.textContent = data.shortCode;
+
+      // Expiration
+      if (data.expiresAt) {
+        const expDate = new Date(data.expiresAt);
+
+        resExpiration.textContent =
+          `Expires: ${expDate.toLocaleString()}`;
+
+        resExpiration.classList.remove('meta-badge-gray');
+      } else {
+        resExpiration.textContent =
+          'No expiration (Permanent)';
+
+        resExpiration.classList.add('meta-badge-gray');
+      }
+
+      resetCopyButton();
+
+      resultCard.classList.remove('hidden');
+
+      resultCard.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+
+    } catch (error) {
+      console.error('Shorten URL error:', error);
+
+      showFormError(
+        'Unable to connect to server. Make sure your backend is running.'
+      );
     }
-
-    // Reset copy button state in case it was previously clicked
-    resetCopyButton();
-
-    // Display result card
-    resultCard.classList.remove('hidden');
-
-    // Smoothly scroll down so result card is clearly visible
-    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 
 
@@ -295,48 +300,90 @@ document.addEventListener('DOMContentLoaded', () => {
    * Updates analytics cards with static demonstration data.
    * @param {string} code - Short code to display.
    */
-  function displayDemoAnalytics(code) {
-    // Static demo values as specified in requirements:
-    // Total Clicks: 24
-    // Last Accessed: Today, 09:15 AM
-    // Status: Active
-    // Short Code: <searched code or aB72xK>
-    metricClicks.textContent = '24';
-    metricLastAccessed.textContent = 'Today, 09:15 AM';
-    metricStatus.innerHTML = '<span class="pulse-dot"></span> Active';
-    metricShortCode.textContent = code;
+  async function displayAnalytics(code) {
+    try {
+      const response = await fetch(
+        `${API_URL}/api/analytics/${encodeURIComponent(code)}`
+      );
 
-    // Ensure analytics content is visible
-    analyticsContent.classList.remove('hidden');
+      const result = await response.json();
+
+      if (!response.ok) {
+        showAnalyticsError(result.message || 'Unable to fetch analytics.');
+        return;
+      }
+
+      const data = result.data;
+
+      metricClicks.textContent = data.clicks;
+
+      if (data.lastAccessed) {
+        const date = new Date(data.lastAccessed);
+
+        metricLastAccessed.textContent = date.toLocaleString([], {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } else {
+        metricLastAccessed.textContent = 'Never';
+      }
+
+      metricStatus.innerHTML =
+        data.status === 'Active'
+          ? '<span class="pulse-dot"></span> Active'
+          : 'Expired';
+
+      metricShortCode.textContent = data.shortCode;
+
+      analyticsContent.classList.remove('hidden');
+
+    } catch (error) {
+      console.error('Analytics error:', error);
+
+      showAnalyticsError(
+        'Unable to connect to server. Make sure your backend is running.'
+      );
+    }
   }
 
-  analyticsSearchForm.addEventListener('submit', (e) => {
+
+  analyticsSearchForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     clearAnalyticsError();
 
     const shortCode = analyticsCodeInput.value.trim();
 
-    // Requirement: If empty, show a validation message
     if (!shortCode) {
       showAnalyticsError('Please enter a short code to view analytics.');
       analyticsCodeInput.focus();
       return;
     }
 
-    // Display static demo analytics
-    displayDemoAnalytics(shortCode);
+    await displayAnalytics(shortCode);
   });
 
-  // Result card helper: "View Analytics for this Link"
-  trackInAnalyticsBtn.addEventListener('click', () => {
-    const code = resShortCode.textContent.trim() || DEFAULT_DEMO_CODE;
+
+  trackInAnalyticsBtn.addEventListener('click', async () => {
+    const code = resShortCode.textContent.trim();
+
+    if (!code) return;
+
     analyticsCodeInput.value = code;
+
     clearAnalyticsError();
-    displayDemoAnalytics(code);
+
+    await displayAnalytics(code);
 
     const analyticsSection = document.getElementById('analytics');
+
     if (analyticsSection) {
-      analyticsSection.scrollIntoView({ behavior: 'smooth' });
+      analyticsSection.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   });
 
@@ -386,8 +433,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Close mobile navigation when clicking anywhere outside
   document.addEventListener('click', (e) => {
     if (navMenu.classList.contains('open') &&
-        !navMenu.contains(e.target) &&
-        !mobileToggle.contains(e.target)) {
+      !navMenu.contains(e.target) &&
+      !mobileToggle.contains(e.target)) {
       navMenu.classList.remove('open');
     }
   });
