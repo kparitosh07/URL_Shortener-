@@ -1,7 +1,7 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const API_URL = 'http://localhost:5000';
+  const API_URL = 'https://url-shortener-c1ru.onrender.com';
 
   // URL Shortener Form Elements
   const shortenerForm = document.getElementById('shortenerForm');
